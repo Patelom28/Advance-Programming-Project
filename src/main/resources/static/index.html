@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Rescue Berlin</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div>
+            <h1>Food Rescue Berlin</h1>
+            <p>Community fridges that turn surplus food into rescued meals</p>
+        </div>
+    </div>
+    <nav class="tabs">
+        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="fridges">Fridges</button>
+        <button class="tab-btn" data-tab="donate">Donate Food</button>
+    </nav>
+</header>
+
+<main>
+
+    <div id="banner" class="banner hidden"></div>
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <section id="tab-dashboard" class="tab-panel active">
+
+        <div class="stat-grid">
+            <div class="stat-card highlight">
+                <span class="stat-value" id="statKgRescued">-</span>
+                <span class="stat-label">kg rescued</span>
+            </div>
+            <div class="stat-card warn">
+                <span class="stat-value" id="statKgLost">-</span>
+                <span class="stat-label">kg lost</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="statRate">-</span>
+                <span class="stat-label">rescue rate</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="statAvailable">-</span>
+                <span class="stat-label">items waiting</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" id="statFridges">-</span>
+                <span class="stat-label">fridges in service</span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="panel">
+                <h2>Take this home today</h2>
+                <table class="data-table" id="expiringTable">
+                    <thead>
+                        <tr><th>Food</th><th>Fridge</th><th>Best before</th><th>Weight</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <p class="empty-note hidden" id="expiringEmpty">Nothing is close to its best-before date right now.</p>
+            </div>
+
+            <div class="panel">
+                <h2>Rescued food by category</h2>
+                <table class="data-table" id="categoryTable">
+                    <thead>
+                        <tr><th>Category</th><th>Rescued</th><th>Share</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <p class="empty-note hidden" id="categoryEmpty">No food has been rescued yet.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Export impact report</h2>
+            <div class="card-actions">
+                <a class="secondary" href="/api/stats/export?format=csv">Download CSV</a>
+                <a class="secondary" href="/api/stats/export?format=text">Download text report</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FRIDGES ===================== -->
+    <section id="tab-fridges" class="tab-panel">
+
+        <div class="panel">
+            <h2>Register a new fridge</h2>
+            <form id="fridgeForm" class="inline-form">
+                <input type="text" id="fName" placeholder="Fridge name" required maxlength="80" />
+                <input type="text" id="fAddress" placeholder="Street address" required maxlength="160" />
+                <input type="text" id="fDistrict" placeholder="District" required maxlength="60" />
+                <input type="number" id="fCapacity" placeholder="Capacity" required min="1" max="200" value="10" />
+                <button type="submit">Add fridge</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h2>Where the fridges are</h2>
+            <div id="fridgeList" class="fridge-list"></div>
+        </div>
+
+        <div class="panel">
+            <h2 id="itemsHeading">Items inside a fridge</h2>
+            <p class="empty-note" id="itemsHint">Click "View items" on a fridge above to see what is inside it.</p>
+            <table class="data-table hidden" id="itemsTable">
+                <thead>
+                    <tr><th>Food</th><th>Category</th><th>Weight</th><th>Best before</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================== DONATE ===================== -->
+    <section id="tab-donate" class="tab-panel">
+        <div class="panel narrow">
+            <h2>Donate food into a fridge</h2>
+            <form id="donateForm">
+                <label for="dFridge">Fridge</label>
+                <select id="dFridge" required></select>
+
+                <label for="dName">Food name</label>
+                <input type="text" id="dName" required maxlength="100" placeholder="e.g. Rye bread, 2 loaves" />
+
+                <label for="dCategory">Category</label>
+                <select id="dCategory" required>
+                    <option value="BAKERY">Bread and bakery</option>
+                    <option value="FRUIT_VEG">Fruit and vegetables</option>
+                    <option value="DAIRY">Dairy and eggs</option>
+                    <option value="COOKED_MEAL">Cooked meals</option>
+                    <option value="PANTRY">Pantry / non-perishable</option>
+                    <option value="OTHER">Other</option>
+                </select>
+
+                <label for="dQuantity">Weight (kg)</label>
+                <input type="number" id="dQuantity" required min="0.1" step="0.1" value="1.0" />
+
+                <label for="dExpiry">Best-before date</label>
+                <input type="date" id="dExpiry" required />
+
+                <label for="dDonor">Donor name (optional)</label>
+                <input type="text" id="dDonor" maxlength="80" placeholder="e.g. Baeckerei Otto" />
+
+                <button type="submit">Donate this food</button>
+            </form>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>M604 Advanced Programming &middot; Spring Boot, Maven, JDK 17, H2, HTML/CSS/JavaScript</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

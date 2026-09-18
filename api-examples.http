@@ -1,0 +1,79 @@
+### Food Rescue Berlin - example REST calls
+### Open this file in IntelliJ and click the green arrow next to a request.
+### These are the same calls the web page's JavaScript makes automatically -
+### useful here mainly to demonstrate the error handling quickly.
+
+### 1. All fridges
+GET http://localhost:8081/api/fridges
+
+### 2. Only fridges that are in service
+GET http://localhost:8081/api/fridges?activeOnly=true
+
+### 3. One fridge with its filling level
+GET http://localhost:8081/api/fridges/1/summary
+
+### 4. Everything inside fridge 1
+GET http://localhost:8081/api/fridges/1/items
+
+### 5. Register a new fridge
+POST http://localhost:8081/api/fridges
+Content-Type: application/json
+
+{
+  "name": "Fridge at the sports club",
+  "address": "Sportplatzweg 3",
+  "district": "Spandau",
+  "capacity": 10,
+  "active": true
+}
+
+### 6. Donate food into fridge 1
+POST http://localhost:8081/api/fridges/1/items
+Content-Type: application/json
+
+{
+  "name": "Pumpkin soup, 3 portions",
+  "category": "COOKED_MEAL",
+  "quantityKg": 2.4,
+  "expiryDate": "2030-01-01",
+  "donorName": "Volkskueche"
+}
+
+### 7. Claim an item (change the id to one that is still available)
+POST http://localhost:8081/api/items/1/claim
+Content-Type: application/json
+
+{
+  "claimedBy": "Lena"
+}
+
+### 8. Food that must be taken within two days
+GET http://localhost:8081/api/items/expiring?days=2
+
+### 9. Impact statistics of the whole network
+GET http://localhost:8081/api/stats
+
+### 10. Error example: fridge does not exist -> 404 with a clean JSON message
+GET http://localhost:8081/api/fridges/999
+
+### 11. Error example: best-before date in the past -> 409
+POST http://localhost:8081/api/fridges/1/items
+Content-Type: application/json
+
+{
+  "name": "Yesterday's salad",
+  "category": "COOKED_MEAL",
+  "quantityKg": 1.0,
+  "expiryDate": "2020-01-01"
+}
+
+### 12. Error example: missing fields -> 400 with a list of field errors
+POST http://localhost:8081/api/fridges
+Content-Type: application/json
+
+{
+  "name": "",
+  "address": "",
+  "district": "",
+  "capacity": 0
+}
